@@ -309,10 +309,13 @@ var HASHTAG_SETS=[
 var STATUS_META={draft:{label:"Draft",bg:"#ffefe0",fg:"#5a4b70"},ready:{label:"Ready",bg:"#dcf58a",fg:"#1f1235"},scheduled:{label:"Scheduled",bg:"#c9e0ff",fg:"#1f1235"},posted:{label:"Posted",bg:"#1f1235",fg:"#fff"}};
 
 /* ================= Canvas preview (HTML, scaled via --u) ================= */
-function handleHTML(dark){
-  return '<div style="display:inline-flex;width:fit-content;align-items:center;border-radius:999px;gap:'+u(14)+';padding:'+u(10)+' '+u(28)+' '+u(10)+' '+u(10)+';background:'+(dark?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.88)")+';color:'+(dark?"#fff":PLUM)+';backdrop-filter:blur(6px)">'
-  +'<img src="'+LOGO+'" alt="" style="border-radius:999px;background:#fff;width:'+u(56)+';height:'+u(56)+';padding:'+u(3)+';object-fit:cover" />'
-  +'<span class="font-heading" style="font-weight:600;white-space:nowrap;font-size:'+u(34)+'"><span style="color:'+HOT+'">@</span>lifeatjntuh</span></div>';
+function handleHTML(dark,slim){
+  /* slim=true: smaller pill for Lost & Found, so more of the item photo shows.
+     Default (slim falsy) is identical to before for every other template. */
+  var logoS=slim?44:56, fs=slim?30:34;
+  return '<div style="display:inline-flex;width:fit-content;align-items:center;border-radius:999px;gap:'+u(slim?10:14)+';padding:'+u(slim?8:10)+' '+u(slim?22:28)+' '+u(slim?8:10)+' '+u(slim?8:10)+';background:'+(dark?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.88)")+';color:'+(dark?"#fff":PLUM)+';backdrop-filter:blur(6px)">'
+  +'<img src="'+LOGO+'" alt="" style="border-radius:999px;background:#fff;width:'+u(logoS)+';height:'+u(logoS)+';padding:'+u(3)+';object-fit:cover" />'
+  +'<span class="font-heading" style="font-weight:600;white-space:nowrap;font-size:'+u(fs)+'"><span style="color:'+HOT+'">@</span>lifeatjntuh</span></div>';
 }
 function chipHTML(text,tone){
   var bg=tone==="dark"?PLUM:tone==="pink"?HOT:tone==="glass"?"rgba(255,255,255,0.2)":"#fff";
@@ -333,26 +336,28 @@ var SPAD='padding:'+u(250)+' '+u(80)+' '+u(300);
    the story safe zone. No names, no tags — the finder/loser is notified
    by DM after posting. ---- */
 function lostFoundHTML(isLost,f,phTx){
-  var label=isLost?"LOST":"FOUND";
+  var label=isLost?"LOST!":"FOUND!";
   var labelBg=isLost?"#ff6a1f":"#dcf58a";
   var labelFg=isLost?"#fff":PLUM;
   var phId=(f.photo||"");
   var inner='<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'
-    +'<div>'+handleHTML(true)+'</div>'
-    +'<div style="margin-top:'+u(48)+'"><span class="grotesk" style="display:inline-block;background:'+labelBg+';color:'+labelFg+';font-size:'+u(150)+';padding:'+u(28)+' '+u(48)+';border-radius:'+u(48)+'">'+label+'</span></div>'
-    +'<div style="margin-top:auto;background:#fff;padding:'+u(48)+';border-radius:'+u(56)+';color:'+PLUM+'">'+chipHTML(isLost?"Lost item":"Found item","pink")
-    +'<p class="font-heading" style="font-weight:700;font-size:'+u(78)+';margin:'+u(28)+' 0 0;line-height:.98">'+esc(f.item||"")+'</p>'
-    +'<p style="font-size:'+u(30)+';margin:'+u(16)+' 0 0;color:#5a4b70">📍 '+esc(f.where||"")+' · 🕐 '+esc(f.when||"")+'</p>'
-    +'<div style="margin-top:'+u(28)+'">'+chipHTML(f.contact||"","dark")+'</div></div></div>';
+    +'<div>'+handleHTML(true,true)+'</div>'
+    +'<div style="margin-top:'+u(36)+'"><span class="grotesk" style="display:inline-block;background:'+labelBg+';color:'+labelFg+';font-size:'+u(120)+';padding:'+u(20)+' '+u(36)+';border-radius:'+u(36)+'">'+label+'</span></div>'
+    +'<div style="margin-top:auto;background:#fff;padding:'+u(36)+';border-radius:'+u(44)+';color:'+PLUM+'">'+chipHTML(isLost?"Lost item":"Found item","pink")
+    +'<p class="font-heading" style="font-weight:700;font-size:'+u(68)+';margin:'+u(20)+' 0 0;line-height:1.0">'+esc(f.item||"")+'</p>'
+    +'<p style="font-size:'+u(28)+';margin:'+u(12)+' 0 0;line-height:1.35;color:#5a4b70">📍 '+esc(f.where||"")+'</p>'
+    +'<p style="font-size:'+u(28)+';margin:'+u(4)+' 0 0;line-height:1.35;color:#5a4b70">🕐 '+esc(f.when||"")+'</p>'
+    +'<div style="margin-top:'+u(20)+'">'+chipHTML(f.contact||"","dark")+'</div></div></div>';
   if(phId){
     return frameHTML("story",PLUM,true,
-      '<img data-pan="photo" src="'+photoSrc(phId)+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+photoStyle(phTx,"")+'" />'
+      '<img src="'+photoSrc(phId)+'" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(28px) brightness(.55) saturate(1.15);transform:scale(1.15)" />'
+      +'<img data-pan="photo" src="'+photoSrc(phId)+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+photoStyle(phTx,"")+'" />'
       +'<div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(31,18,53,0.45) 0%, transparent 25%, transparent 60%, rgba(31,18,53,0.55) 100%)"></div>'
       +inner);
   }
   return frameHTML("story",PLUM,true,
-    '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:'+u(80)+'">'
-    +'<span style="font-size:'+u(200)+';line-height:1">'+(isLost?"🔍":"✨")+'</span>'
+    '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:'+u(600)+' '+u(80)+' 0">'
+    +'<span style="font-size:'+u(160)+';line-height:1">'+(isLost?"🔍":"✨")+'</span>'
     +'<p class="font-heading" style="font-weight:700;font-size:'+u(64)+';margin:'+u(32)+' 0 0;color:#fff">No photo yet</p>'
     +'<p style="font-size:'+u(30)+';margin:'+u(16)+' 0 0;color:rgba(255,255,255,0.75)">Upload a photo of the item —<br />the story still works without one.</p></div>'
     +inner);
@@ -695,6 +700,12 @@ function renderStudio(){
   }
   ensureSlides(editing);
   var tpl=tplById(editing.template_id), size=draftExportSize(editing);
+  /* Lost & Found: the item photo is the whole point, and students send it in
+     any aspect — open Image controls (pan / zoom / fit / align) by default so
+     placing the photo is visible instead of hidden behind the collapsed
+     accordion. The controls themselves are unchanged; this only sets the
+     existing imgControlsOpen flag for these two templates when a photo is set. */
+  if((tpl.id==="story-lost"||tpl.id==="story-found")&&(editing.fields.photo||""))imgControlsOpen=true;
   if(!editing.sizeVariant)editing.sizeVariant="square";
   var isCarousel=isCarouselDraft(editing);
   var carouselHTML=isCarousel?carouselStripHTML(editing):"";
@@ -819,7 +830,7 @@ function imageControlsHTML(e,tpl){
     var tx=getTx(e,fd.key);var isObj=fd.type==="object";
     html+='<div class="card" style="padding:1rem;border-radius:1.4rem;box-shadow:none;margin-bottom:.75rem">'
     +'<p class="field-label" style="margin-bottom:.6rem">'+esc(fd.label)+' — framing</p>'
-    +'<label style="display:block;margin-bottom:.6rem"><span style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600"><span>Zoom / crop</span><span data-txval="'+fd.key+'-zoom">'+Number(tx.zoom).toFixed(2)+'×</span></span><input type="range" class="txrange" min="1" max="3" step="0.05" value="'+tx.zoom+'" data-txrange="'+fd.key+'-zoom" oninput="setTxVal(\''+fd.key+'\',\'zoom\',this.value)" /></label>'
+    +'<label style="display:block;margin-bottom:.6rem"><span style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600"><span>Zoom / crop</span><span data-txval="'+fd.key+'-zoom">'+Number(tx.zoom).toFixed(2)+'×</span></span><input type="range" class="txrange" min="0.5" max="3" step="0.05" value="'+tx.zoom+'" data-txrange="'+fd.key+'-zoom" oninput="setTxVal(\''+fd.key+'\',\'zoom\',this.value)" /></label>'
     +'<label style="display:block;margin-bottom:.6rem"><span style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600"><span>Pan left ↔ right</span><span data-txval="'+fd.key+'-x">'+tx.x+'</span></span><input type="range" class="txrange" min="-50" max="50" step="1" value="'+tx.x+'" data-txrange="'+fd.key+'-x" oninput="setTxVal(\''+fd.key+'\',\'x\',this.value)" /></label>'
     +'<label style="display:block;margin-bottom:.6rem"><span style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:600"><span>Pan up ↕ down</span><span data-txval="'+fd.key+'-y">'+tx.y+'</span></span><input type="range" class="txrange" min="-50" max="50" step="1" value="'+tx.y+'" data-txrange="'+fd.key+'-y" oninput="setTxVal(\''+fd.key+'\',\'y\',this.value)" /></label>'
     +(!isObj?'<div style="margin-bottom:.6rem"><span class="field-label">Crop fit</span><div style="display:flex;flex-wrap:wrap;gap:.4rem">'+[["cover","Cover · fill & crop"],["contain","Contain · fit whole"],["fill","Fill · stretch"]].map(function(o){return '<button onclick="setTxFit(\''+fd.key+'\',\''+o[0]+'\')" class="txbtn press'+(tx.fit===o[0]?" on":"")+'">'+o[1]+'</button>';}).join("")+'</div></div>'
@@ -874,7 +885,7 @@ function wirePan(){
   pv.addEventListener("pointerup",endDrag);pv.addEventListener("pointercancel",endDrag);
   pv.addEventListener("wheel",function(ev){
     ev.preventDefault();var key=keyOf(ev.target);var t=ensureTx(key);
-    t.zoom=Math.max(1,Math.min(3,Math.round(((t.zoom||1)+(ev.deltaY<0?0.08:-0.08))*100)/100));
+    t.zoom=Math.max(0.5,Math.min(3,Math.round(((t.zoom||1)+(ev.deltaY<0?0.08:-0.08))*100)/100));
     applyInPlace(key);
     clearTimeout(pv._wheelT);pv._wheelT=setTimeout(function(){renderStudio();},450);
   },{passive:false});
@@ -972,15 +983,17 @@ function drawGrotesk(ctx,text,x,y,size,color,maxW){
   lines.forEach(function(l,i){ctx.fillText(l,x,y+i*lh);});
   return lines.length*lh;}
 function setFont(ctx,size,weight,family){ctx.font=weight+" "+size+"px "+family;}
-function drawHandleC(ctx,logo,x,y,dark){
-  setFont(ctx,34,600,'"Fredoka",sans-serif');var tw=ctx.measureText("@lifeatjntuh").width-ctx.measureText("@").width;
-  setFont(ctx,34,600,'"Fredoka",sans-serif');var full=ctx.measureText("@lifeatjntuh").width;
-  var w=10+56+14+full+28;
-  ctx.save();rr(ctx,x,y,w,76,999);ctx.fillStyle=dark?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.88)";ctx.fill();
-  ctx.save();ctx.beginPath();ctx.arc(x+10+28,y+38,28,0,7);ctx.clip();ctx.fillStyle="#fff";ctx.fillRect(x+10,y+10,56,56);ctx.drawImage(logo,x+13,y+13,50,50);ctx.restore();
-  setFont(ctx,34,600,'"Fredoka",sans-serif');ctx.textBaseline="middle";ctx.textAlign="left";
-  ctx.fillStyle=HOT;ctx.fillText("@",x+80,y+40);
-  ctx.fillStyle=dark?"#fff":PLUM;ctx.fillText("lifeatjntuh",x+80+ctx.measureText("@").width,y+40);ctx.restore();
+function drawHandleC(ctx,logo,x,y,dark,slim){
+  /* slim=true: smaller pill (64px tall, 44px logo, 30px type) for Lost & Found,
+     matching the slim handleHTML preview. Default is unchanged for all other templates. */
+  var fs=slim?30:34, logoS=slim?44:56, h=slim?64:76, tx=slim?66:80;
+  setFont(ctx,fs,600,'"Fredoka",sans-serif');var full=ctx.measureText("@lifeatjntuh").width;
+  var w=10+logoS+(slim?12:14)+full+(slim?22:28);
+  ctx.save();rr(ctx,x,y,w,h,999);ctx.fillStyle=dark?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.88)";ctx.fill();
+  ctx.save();ctx.beginPath();ctx.arc(x+10+logoS/2,y+h/2,logoS/2,0,7);ctx.clip();ctx.fillStyle="#fff";ctx.fillRect(x+10,y+10,logoS,logoS);ctx.drawImage(logo,x+13,y+13,logoS-6,logoS-6);ctx.restore();
+  setFont(ctx,fs,600,'"Fredoka",sans-serif');ctx.textBaseline="middle";ctx.textAlign="left";
+  ctx.fillStyle=HOT;ctx.fillText("@",x+tx,y+h/2+2);
+  ctx.fillStyle=dark?"#fff":PLUM;ctx.fillText("lifeatjntuh",x+tx+ctx.measureText("@").width,y+h/2+2);ctx.restore();
   return w;}
 function drawChipC(ctx,text,x,y,tone){
   setFont(ctx,32,700,'"Plus Jakarta Sans",sans-serif');var w=ctx.measureText(text).width+60,h=64;
@@ -1172,26 +1185,42 @@ async function renderPNGForDraft(draft,btn){
       var isLost=tpl.id==="story-lost";
       var ph5=(f.photo||"")?await loadImg(photoSrc(f.photo)).catch(function(){return null;}):null;
       if(ph5){
+        /* Blurred-photo backdrop: when the photo is Contain, or zoomed out so
+           it no longer fills the frame, the space behind it is the same photo
+           blurred on plum — never a flat olive/pastel bar. At Cover 1x the
+           backdrop is fully covered, so nothing changes. */
+        ctx.save();try{ctx.filter="blur(48px) brightness(0.6) saturate(1.15)";}catch(e){}
+        drawCover(ctx,ph5,0,0,W,H,0);ctx.restore();
+        ctx.fillStyle="rgba(31,18,53,0.25)";ctx.fillRect(0,0,W,H);
         drawCoverTx(ctx,ph5,0,0,W,H,0,rtx("photo"));
         var grL=ctx.createLinearGradient(0,0,0,H);grL.addColorStop(0,"rgba(31,18,53,0.45)");grL.addColorStop(0.25,"rgba(31,18,53,0)");grL.addColorStop(0.6,"rgba(31,18,53,0)");grL.addColorStop(1,"rgba(31,18,53,0.55)");ctx.fillStyle=grL;ctx.fillRect(0,0,W,H);
       } else {
         ctx.fillStyle=PLUM;ctx.fillRect(0,0,W,H);
-        setFont(ctx,200,400,'"Plus Jakarta Sans",sans-serif');ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(isLost?"🔍":"✨",W/2,820);ctx.textAlign="left";
-        drawText(ctx,"No photo yet",0,1020,64,'"Fredoka",sans-serif',700,"#ffffff",W,"center",1.0);
-        drawText(ctx,"Upload a photo of the item",0,1110,30,'"Plus Jakarta Sans",sans-serif',400,"rgba(255,255,255,0.75)",W,"center",1.3);
+        setFont(ctx,200,400,'"Plus Jakarta Sans",sans-serif');ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(isLost?"🔍":"✨",W/2,700);ctx.textAlign="left";
+        drawText(ctx,"No photo yet",0,850,64,'"Fredoka",sans-serif',700,"#ffffff",W,"center",1.0);
+        drawText(ctx,"Upload a photo of the item — the story still works without one.",0,940,30,'"Plus Jakarta Sans",sans-serif',400,"rgba(255,255,255,0.75)",W,"center",1.3);
       }
-      if(logo)drawHandleC(ctx,logo,80,250,true);
-      var labTxt=isLost?"LOST":"FOUND", labBg=isLost?"#ff6a1f":"#dcf58a", labFg=isLost?"#ffffff":PLUM;
-      ctx.font='800 150px "Bricolage Grotesque","Plus Jakarta Sans",sans-serif';
-      var labW=ctx.measureText(labTxt).width+96, labY=250+76+48, labH=190;
-      ctx.save();rr(ctx,80,labY,labW,labH,48);ctx.fillStyle=labBg;ctx.fill();
-      ctx.fillStyle=labFg;ctx.textBaseline="middle";ctx.textAlign="left";ctx.fillText(labTxt,80+48,labY+labH/2+4);ctx.restore();
-      var cardH=480, cardY=H-300-cardH;
-      rr(ctx,80,cardY,920,cardH,56);ctx.fillStyle="#fff";ctx.fill();
-      drawChipC(ctx,isLost?"Lost item":"Found item",80+48,cardY+48,"pink");
-      var itemH=drawText(ctx,g("item",""),80+48,cardY+48+64+28,78,'"Fredoka",sans-serif',700,PLUM,824,"left",1.0);
-      setFont(ctx,30,400,'"Plus Jakarta Sans",sans-serif');ctx.fillStyle="#5a4b70";ctx.textBaseline="top";ctx.fillText("📍 "+g("where","")+" · 🕐 "+g("when",""),80+48,cardY+48+64+28+itemH+16);
-      drawChipC(ctx,g("contact",""),80+48,cardY+cardH-48-64,"dark");
+      if(logo)drawHandleC(ctx,logo,80,250,true,true);
+      var labTxt=isLost?"LOST!":"FOUND!", labBg=isLost?"#ff6a1f":"#dcf58a", labFg=isLost?"#ffffff":PLUM;
+      ctx.font='800 120px "Bricolage Grotesque","Plus Jakarta Sans",sans-serif';
+      var labW=ctx.measureText(labTxt).width+72, labY=250+64+36, labH=160;
+      ctx.save();rr(ctx,80,labY,labW,labH,36);ctx.fillStyle=labBg;ctx.fill();
+      ctx.fillStyle=labFg;ctx.textBaseline="middle";ctx.textAlign="left";ctx.fillText(labTxt,80+36,labY+labH/2+4);ctx.restore();
+      /* Detail card: height is measured from the actual wrapped text, so the
+         where/when lines can never overflow the card. Where and when are
+         separate wrapped lines (same as the preview), each capped at 848px. */
+      ctx.font='700 68px "Fredoka",sans-serif';var itemH=wrapLines(ctx,g("item",""),848).length*68;
+      ctx.font='400 28px "Plus Jakarta Sans",sans-serif';var whereH=wrapLines(ctx,"📍 "+g("where",""),848).length*28*1.35, whenH=wrapLines(ctx,"🕐 "+g("when",""),848).length*28*1.35;
+      var cardH=36+64+20+itemH+12+whereH+4+whenH+20+64+36, cardY=H-300-cardH;
+      rr(ctx,80,cardY,920,cardH,44);ctx.fillStyle="#fff";ctx.fill();
+      drawChipC(ctx,isLost?"Lost item":"Found item",80+36,cardY+36,"pink");
+      var itemY=cardY+36+64+20;
+      drawText(ctx,g("item",""),80+36,itemY,68,'"Fredoka",sans-serif',700,PLUM,848,"left",1.0);
+      var whereY=itemY+itemH+12;
+      drawText(ctx,"📍 "+g("where",""),80+36,whereY,28,'"Plus Jakarta Sans",sans-serif',400,"#5a4b70",848,"left",1.35);
+      var whenY=whereY+whereH+4;
+      drawText(ctx,"🕐 "+g("when",""),80+36,whenY,28,'"Plus Jakarta Sans",sans-serif',400,"#5a4b70",848,"left",1.35);
+      drawChipC(ctx,g("contact",""),80+36,cardY+cardH-36-64,"dark");
     }
     var fname=("lifeatjntuh-"+tpl.id+(f.index?"-slide"+f.index:"")+"-"+W+"x"+H+".png").replace(/\s+/g,"-");
     function saveBlob(blob){
