@@ -271,7 +271,13 @@ var TEMPLATES=[
   defaults:{title:"Best canteen order?",body:"Settle it once and for all. Best answers get featured tomorrow.",object:"books"}},
  {id:"story-recruit",name:"Story · Join LifeOps",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"LifeOps role call: plum ground, Join LifeOps grotesk, role + pillar chips, the three real perks and a link-sticker slot.",defaultColor:"lavender",
   fields:[{key:"role",label:"Role",type:"text"},{key:"pillar",label:"Pillar (Curate / Connect / Collab)",type:"text"}],
-  defaults:{role:"Photo Curator",pillar:"Curate"}}
+  defaults:{role:"Photo Curator",pillar:"Curate"}},
+ {id:"story-lost",name:"Story · Lost Item",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"Lost-and-found story for something a student lost: full-bleed photo of the item (or a no-photo placeholder), big orange LOST label, item name, where and when it was lost, and a DM @lifeatjntuh line. No names, no tags — the finder is notified by DM after posting.",defaultColor:"peach",
+  fields:[{key:"photo",label:"Photo of the item (upload if you have one)",type:"photo"},{key:"item",label:"Item name",type:"text"},{key:"where",label:"Where it was lost",type:"text"},{key:"when",label:"When it was lost",type:"text"},{key:"contact",label:"How to help — DM line",type:"text"}],
+  defaults:{photo:"",item:"Clear-framed spectacles",where:"Near the University Library",when:"Fri, Nov 21 · evening",contact:"DM @lifeatjntuh if you found it"}},
+ {id:"story-found",name:"Story · Found Item",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"Lost-and-found story for something a student found: full-bleed photo of the item (or a no-photo placeholder), big lime FOUND label, item name, where and when it was found, and a DM @lifeatjntuh line to claim it. No names, no tags — the finder is notified by DM after posting.",defaultColor:"lime",
+  fields:[{key:"photo",label:"Photo of the item (upload if you have one)",type:"photo"},{key:"item",label:"Item name",type:"text"},{key:"where",label:"Where it was found",type:"text"},{key:"when",label:"When it was found",type:"text"},{key:"contact",label:"How to claim — DM line",type:"text"}],
+  defaults:{photo:"",item:"Clear-framed spectacles",where:"Found on the ground near the Library",when:"Fri, Nov 21 · evening",contact:"DM @lifeatjntuh to claim it"}}
 ];
 function tplById(id){for(var i=0;i<TEMPLATES.length;i++)if(TEMPLATES[i].id===id)return TEMPLATES[i];return TEMPLATES[0];}
 var EXPORT_SIZE={square:[1080,1080],portrait:[1080,1350],story:[1080,1920]};
@@ -289,13 +295,16 @@ var PRESETS=[
  {name:"Join the Team",template:"story-recruit",note:"LifeOps recruitment story",overrides:{},color:"lavender",caption:"We're growing the team. Tap the link sticker — Admin Arc form takes 2 minutes.",hashtags:"#LifeOps #LifeAtJNTUH"},
  {name:"Photo of the Day",template:"story-photo",note:"Daily story photo with credit",overrides:{},color:"pink",caption:"Photo of the day 📸 Send yours via the form in bio.",hashtags:"#LifeAtJNTUH #PhotoOfTheDay"},
  {name:"Photo of the Day · Full Bleed",template:"photo-day",note:"Seamless single post — photo edge to edge, only handle + credit",overrides:{},color:"pink",caption:"Photo of the day 📸 Nothing but the frame, the light, and campus.\n\nSend yours via the form in bio.",hashtags:"#LifeAtJNTUH #PhotoOfTheDay #CampusDiaries"},
+ {name:"Lost Item",template:"story-lost",note:"Lost-and-found story — upload the item photo, or post without one",overrides:{},color:"peach",caption:"Lost something on campus? 👀\n\nDM us a photo and where you lost it — we'll post it here.",hashtags:"#LifeAtJNTUH #LostAndFound #JNTUH"},
+ {name:"Found Item",template:"story-found",note:"Lost-and-found story — upload the item photo, or post without one",overrides:{},color:"lime",caption:"Found on campus! 🔍\n\nDM us to claim it — tell us where you lost it and we'll match you up.",hashtags:"#LifeAtJNTUH #LostAndFound #JNTUH"},
  {name:"Seamless Photo Carousel",template:"carousel-cover",note:"Cover → full-bleed photos → end card. Reorder, retype and mix slides in the Studio",overrides:{title:"Campus In Frames",total:"4"},color:"pink",caption:"Campus, in frames 📸 Swipe through — every photo credited to its photographer.\n\nSend yours via the form in bio.",hashtags:"#LifeAtJNTUH #PhotoOfTheDay #CampusDiaries",slides:[{tid:"carousel-cover",overrides:{title:"Campus In Frames"}},{tid:"carousel-photo",overrides:{photo:"jubilee",credit:"Photo: Anonymous"}},{tid:"carousel-photo",overrides:{photo:"tree",credit:"Photo: Anonymous"}},{tid:"carousel-end",overrides:{title:"See you on campus."}}]}
 ];
 var HASHTAG_SETS=[
  {name:"Curate · Events",tags:"#LifeAtJNTUH #JNTUH #CampusLife #ClubEvents"},
  {name:"Curate · Photos",tags:"#LifeAtJNTUH #CampusDiaries #PhotoOfTheDay #JNTUH"},
  {name:"Connect · Buddy Apps",tags:"#LifeAtJNTUH #SkillBuddy #ThriftBuddy #GoalBuddy"},
- {name:"Collab · Creators",tags:"#LifeAtJNTUH #CreatorShoutout #CampusCreators"}
+ {name:"Collab · Creators",tags:"#LifeAtJNTUH #CreatorShoutout #CampusCreators"},
+ {name:"Lost & Found",tags:"#LifeAtJNTUH #LostAndFound #JNTUH"}
 ];
 var STATUS_META={draft:{label:"Draft",bg:"#ffefe0",fg:"#5a4b70"},ready:{label:"Ready",bg:"#dcf58a",fg:"#1f1235"},scheduled:{label:"Scheduled",bg:"#c9e0ff",fg:"#1f1235"},posted:{label:"Posted",bg:"#1f1235",fg:"#fff"}};
 
@@ -319,6 +328,35 @@ function frameHTML(format,bg,dark,inner){
 }
 var PAD='padding:'+u(72);
 var SPAD='padding:'+u(250)+' '+u(80)+' '+u(300);
+/* ---- Lost & Found stories: full-bleed item photo (or a plum no-photo
+   placeholder), big LOST / FOUND label, white detail card at the bottom of
+   the story safe zone. No names, no tags — the finder/loser is notified
+   by DM after posting. ---- */
+function lostFoundHTML(isLost,f,phTx){
+  var label=isLost?"LOST":"FOUND";
+  var labelBg=isLost?"#ff6a1f":"#dcf58a";
+  var labelFg=isLost?"#fff":PLUM;
+  var phId=(f.photo||"");
+  var inner='<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'
+    +'<div>'+handleHTML(true)+'</div>'
+    +'<div style="margin-top:'+u(48)+'"><span class="grotesk" style="display:inline-block;background:'+labelBg+';color:'+labelFg+';font-size:'+u(150)+';padding:'+u(28)+' '+u(48)+';border-radius:'+u(48)+'">'+label+'</span></div>'
+    +'<div style="margin-top:auto;background:#fff;padding:'+u(48)+';border-radius:'+u(56)+';color:'+PLUM+'">'+chipHTML(isLost?"Lost item":"Found item","pink")
+    +'<p class="font-heading" style="font-weight:700;font-size:'+u(78)+';margin:'+u(28)+' 0 0;line-height:.98">'+esc(f.item||"")+'</p>'
+    +'<p style="font-size:'+u(30)+';margin:'+u(16)+' 0 0;color:#5a4b70">📍 '+esc(f.where||"")+' · 🕐 '+esc(f.when||"")+'</p>'
+    +'<div style="margin-top:'+u(28)+'">'+chipHTML(f.contact||"","dark")+'</div></div></div>';
+  if(phId){
+    return frameHTML("story",PLUM,true,
+      '<img data-pan="photo" src="'+photoSrc(phId)+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;'+photoStyle(phTx,"")+'" />'
+      +'<div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(31,18,53,0.45) 0%, transparent 25%, transparent 60%, rgba(31,18,53,0.55) 100%)"></div>'
+      +inner);
+  }
+  return frameHTML("story",PLUM,true,
+    '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:'+u(80)+'">'
+    +'<span style="font-size:'+u(200)+';line-height:1">'+(isLost?"🔍":"✨")+'</span>'
+    +'<p class="font-heading" style="font-weight:700;font-size:'+u(64)+';margin:'+u(32)+' 0 0;color:#fff">No photo yet</p>'
+    +'<p style="font-size:'+u(30)+';margin:'+u(16)+' 0 0;color:rgba(255,255,255,0.75)">Upload a photo of the item —<br />the story still works without one.</p></div>'
+    +inner);
+}
 function canvasHTML(tid,f,color,transforms,sizeVariant){
   var pastel=PASTEL_HEX[color]||PASTEL_HEX.lime, i, rows, steps, icons=["📸","📤","🏷️","✨"];
   var sqFmt=canvasFormatFor(tid,sizeVariant);
@@ -462,6 +500,8 @@ function canvasHTML(tid,f,color,transforms,sizeVariant){
        +'<div style="display:flex;flex-direction:column;gap:'+u(26)+';margin-top:'+u(60)+'">'+ph+'</div>'
        +'<div style="margin-top:auto;padding-top:'+u(56)+'">'+stickerHTML("Link: Admin Arc",false,true)+'</div></div>');
    }
+   case "story-lost": return lostFoundHTML(true,f,tx("photo"));
+   case "story-found": return lostFoundHTML(false,f,tx("photo"));
   }
   return frameHTML("square",pastel,false,'<div style="padding:2rem" class="font-heading">Template</div>');
 }
@@ -1125,6 +1165,33 @@ async function renderPNGForDraft(draft,btn){
         setFont(ctx,34,400,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(p[0],80+36,py+38);ctx.textAlign="left";
         drawText(ctx,p[1],80+96,py+8,34,'"Plus Jakarta Sans",sans-serif',400,"rgba(255,255,255,0.86)",800,"left",1.35);py+=110;});
       drawStickerC(ctx,"Link: Admin Arc",(W-420)/2,H-300-100,420,100,false,true);
+    } else if(tpl.id==="story-lost"||tpl.id==="story-found"){
+      /* Lost & Found: same layout as the HTML canvas — full-bleed item photo
+         (or a plum no-photo placeholder), big LOST / FOUND pill, white
+         detail card at the bottom of the safe zone. */
+      var isLost=tpl.id==="story-lost";
+      var ph5=(f.photo||"")?await loadImg(photoSrc(f.photo)).catch(function(){return null;}):null;
+      if(ph5){
+        drawCoverTx(ctx,ph5,0,0,W,H,0,rtx("photo"));
+        var grL=ctx.createLinearGradient(0,0,0,H);grL.addColorStop(0,"rgba(31,18,53,0.45)");grL.addColorStop(0.25,"rgba(31,18,53,0)");grL.addColorStop(0.6,"rgba(31,18,53,0)");grL.addColorStop(1,"rgba(31,18,53,0.55)");ctx.fillStyle=grL;ctx.fillRect(0,0,W,H);
+      } else {
+        ctx.fillStyle=PLUM;ctx.fillRect(0,0,W,H);
+        setFont(ctx,200,400,'"Plus Jakarta Sans",sans-serif');ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(isLost?"🔍":"✨",W/2,820);ctx.textAlign="left";
+        drawText(ctx,"No photo yet",0,1020,64,'"Fredoka",sans-serif',700,"#ffffff",W,"center",1.0);
+        drawText(ctx,"Upload a photo of the item",0,1110,30,'"Plus Jakarta Sans",sans-serif',400,"rgba(255,255,255,0.75)",W,"center",1.3);
+      }
+      if(logo)drawHandleC(ctx,logo,80,250,true);
+      var labTxt=isLost?"LOST":"FOUND", labBg=isLost?"#ff6a1f":"#dcf58a", labFg=isLost?"#ffffff":PLUM;
+      ctx.font='800 150px "Bricolage Grotesque","Plus Jakarta Sans",sans-serif';
+      var labW=ctx.measureText(labTxt).width+96, labY=250+76+48, labH=190;
+      ctx.save();rr(ctx,80,labY,labW,labH,48);ctx.fillStyle=labBg;ctx.fill();
+      ctx.fillStyle=labFg;ctx.textBaseline="middle";ctx.textAlign="left";ctx.fillText(labTxt,80+48,labY+labH/2+4);ctx.restore();
+      var cardH=480, cardY=H-300-cardH;
+      rr(ctx,80,cardY,920,cardH,56);ctx.fillStyle="#fff";ctx.fill();
+      drawChipC(ctx,isLost?"Lost item":"Found item",80+48,cardY+48,"pink");
+      var itemH=drawText(ctx,g("item",""),80+48,cardY+48+64+28,78,'"Fredoka",sans-serif',700,PLUM,824,"left",1.0);
+      setFont(ctx,30,400,'"Plus Jakarta Sans",sans-serif');ctx.fillStyle="#5a4b70";ctx.textBaseline="top";ctx.fillText("📍 "+g("where","")+" · 🕐 "+g("when",""),80+48,cardY+48+64+28+itemH+16);
+      drawChipC(ctx,g("contact",""),80+48,cardY+cardH-48-64,"dark");
     }
     var fname=("lifeatjntuh-"+tpl.id+(f.index?"-slide"+f.index:"")+"-"+W+"x"+H+".png").replace(/\s+/g,"-");
     function saveBlob(blob){
