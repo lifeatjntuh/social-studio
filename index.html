@@ -288,10 +288,10 @@ var TEMPLATES=[
  {id:"story-question",name:"Story · Question / Poll",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"Engagement prompt: pastel ground, grotesk question, one body line, 3D object and a question-sticker slot.",defaultColor:"lime",
   fields:[{key:"title",label:"Question (grotesk)",type:"text"},{key:"body",label:"Body line",type:"textarea"},{key:"object",label:"3D object",type:"object"}],
   defaults:{title:"Best canteen order?",body:"Settle it once and for all. Best answers get featured tomorrow.",object:"books"}},
- {id:"story-recruit",name:"Story · Join LifeOps",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"LifeOps role call: plum ground, Join LifeOps grotesk, role + pillar chips, the three real perks and a link-sticker slot.",defaultColor:"lavender",
+ {id:"story-recruit",name:"Story · Join LifeOps",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"LifeOps role call: Join LifeOps grotesk, role + pillar chips, the three real perks and a link-sticker slot. Ground colour follows the slide colour.",defaultColor:"plum",
   fields:[{key:"role",label:"Role",type:"text"},{key:"pillar",label:"Pillar (Curate / Connect / Collab)",type:"text"}],
   defaults:{role:"Photo Curator",pillar:"Curate"}},
- {id:"story-explainer",name:"Story · What This Role Does",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"Role explainer: plum ground, grotesk question with the role in pink, three numbered lines from the role sheet, and a DM 'LifeOps' line.",defaultColor:"lavender",
+ {id:"story-explainer",name:"Story · What This Role Does",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"Role explainer: grotesk question with the role in the accent colour, three numbered lines from the role sheet, and a DM 'LifeOps' line. Ground colour follows the slide colour.",defaultColor:"plum",
    defaults:{role:"News Correspondent",line1:"Collects campus news",line2:"Verifies it — no rumours",line3:"Produces the weekly news wrap"},
    fields:[{key:"role",label:"Role (grotesk)",type:"text"},{key:"line1",label:"Line 1",type:"text"},{key:"line2",label:"Line 2",type:"text"},{key:"line3",label:"Line 3",type:"text"}]},
  {id:"story-lost",name:"Story · Lost Item",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"Lost-and-found story for something a student lost: full-bleed photo of the item (or a no-photo placeholder), big orange LOST label, item name, where and when it was lost, and a DM @lifeatjntuh line. No names, no tags — the finder is notified by DM after posting.",defaultColor:"peach",
@@ -590,25 +590,25 @@ function canvasHTML(tid,f,color,transforms,sizeVariant){
      +'<div style="margin-top:'+u(76)+'">'+stickerHTML("Question sticker",true,false)+'</div>'
      +'<img data-pan="object" src="'+objSrc(g("object","books"))+'" alt="" style="margin-top:auto;align-self:flex-end;width:'+u(410)+';'+objStyle(tx("object"),"")+'" /></div>');
    case "story-recruit": {
-     var perks=[{icon:"🙈",text:"Your name stays private. Credit goes to a codename like LifeOps #07."},{icon:"🏅",text:"Get a certifier.io certificate for the work you did."},{icon:"🕐",text:"Flexible. Do what you can, when you can."}], ph="";
-     perks.forEach(function(p){ph+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:rgba(255,255,255,0.1);font-size:'+u(34)+'">'+p.icon+'</span><p style="font-size:'+u(34)+';line-height:1.35;margin:0;padding-top:'+u(12)+';color:rgba(255,255,255,0.86)">'+p.text+'</p></div>';});
-     return frameHTML("story",PLUM,true,
+     var ngR=newsGround(color), darkR=ngR.bg===PLUM||ngR.bg===HOT, perks=[{icon:"🙈",text:"Your name stays private. Credit goes to a codename like LifeOps #07."},{icon:"🏅",text:"Get a certifier.io certificate for the work you did."},{icon:"🕐",text:"Flexible. Do what you can, when you can."}], ph="";
+     perks.forEach(function(p){ph+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:'+(darkR?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)")+';font-size:'+u(34)+'">'+p.icon+'</span><p style="font-size:'+u(34)+';font-weight:500;line-height:1.5;margin:0;padding-top:'+u(12)+';color:'+ngR.fg+'">'+p.text+'</p></div>';});
+     return frameHTML("story",ngR.bg,darkR,
        '<img data-pan="object" src="'+OBJECTS[0].src+'" alt="" style="position:absolute;right:'+u(-80)+';top:'+u(330)+';width:'+u(460)+';'+objStyle(tx("object"),"")+'" />'
-       +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'+handleHTML(true)
-       +'<h3 class="grotesk" style="font-size:'+u(222)+';margin:'+u(290)+' 0 0">Join<br /><span style="color:'+HOT+'">LifeOps</span></h3>'
-       +'<div style="display:flex;flex-wrap:wrap;gap:'+u(14)+';margin-top:'+u(42)+'">'+chipHTML(g("role","Role"),"pink")+chipHTML(g("pillar","Pillar"),"glass")+'</div>'
+       +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'+handleHTML(darkR)
+       +'<h3 class="grotesk" style="font-size:'+u(222)+';margin:'+u(290)+' 0 0">Join<br /><span style="color:'+ngR.accent+'">LifeOps</span></h3>'
+       +'<div style="display:flex;flex-wrap:wrap;gap:'+u(14)+';margin-top:'+u(42)+'">'+chipHTML(g("role","Role"),ngR.bg===HOT?"dark":"pink")+chipHTML(g("pillar","Pillar"),darkR?"glass":"dark")+'</div>'
        +'<div style="display:flex;flex-direction:column;gap:'+u(26)+';margin-top:'+u(60)+'">'+ph+'</div>'
-       +'<div style="margin-top:auto;padding-top:'+u(56)+'">'+stickerHTML("Link: Admin Arc",false,true)+'</div></div>');
+       +'<div style="margin-top:auto;padding-top:'+u(56)+'">'+stickerHTML("Link: Admin Arc",false,darkR)+'</div></div>');
    }
    case "story-explainer": {
-     var lines=[g("line1","Collects campus news"),g("line2","Verifies it — no rumours"),g("line3","Produces the weekly news wrap")], lh="";
-     lines.forEach(function(t,i){lh+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:rgba(255,255,255,0.1);font-weight:700;font-size:'+u(34)+'">'+(i+1)+'</span><p style="font-size:'+u(34)+';line-height:1.35;margin:0;padding-top:'+u(12)+';color:rgba(255,255,255,0.86)">'+esc(t)+'</p></div>';});
-     return frameHTML("story",PLUM,true,
+     var ngE=newsGround(color), darkE=ngE.bg===PLUM||ngE.bg===HOT, lines=[g("line1","Collects campus news"),g("line2","Verifies it — no rumours"),g("line3","Produces the weekly news wrap")], lh="";
+     lines.forEach(function(t,i){lh+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:'+(darkE?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)")+';font-weight:700;font-size:'+u(34)+'">'+(i+1)+'</span><p style="font-size:'+u(34)+';font-weight:500;line-height:1.5;margin:0;padding-top:'+u(12)+';color:'+ngE.fg+'">'+esc(t)+'</p></div>';});
+     return frameHTML("story",ngE.bg,darkE,
        '<img data-pan="object" src="'+OBJECTS[0].src+'" alt="" style="position:absolute;right:'+u(0)+';top:'+u(1230)+';width:'+u(300)+';'+objStyle(tx("object"),"")+'" />'
-       +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'+handleHTML(true)
-       +'<h3 class="grotesk" style="font-size:'+u(110)+';line-height:1.02;margin:'+u(160)+' 0 0">What does a<br /><span style="color:'+HOT+'">'+esc(g("role","News Correspondent"))+'</span><br />do?</h3>'
+       +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'+handleHTML(darkE)
+       +'<h3 class="grotesk" style="font-size:'+u(100)+';line-height:1.02;margin:'+u(160)+' 0 0">What does a<br /><span style="color:'+ngE.accent+'">'+esc(g("role","News Correspondent"))+'</span><br />do?</h3>'
        +'<div style="display:flex;flex-direction:column;gap:'+u(26)+';margin-top:'+u(56)+'">'+lh+'</div>'
-       +'<div style="margin-top:auto;padding-top:'+u(56)+'"><p style="font-size:'+u(36)+';font-weight:700;line-height:1.35;margin:0;color:#fff">Think you\u2019d be good at this?</p><p style="font-size:'+u(36)+';font-weight:700;line-height:1.35;margin:'+u(6)+' 0 0;color:'+HOT+'">DM us \u2018LifeOps\u2019</p></div></div>');
+       +'<div style="margin-top:auto;padding-top:'+u(56)+'"><p style="font-size:'+u(36)+';font-weight:700;line-height:1.35;margin:0;color:'+ngE.fg+'">Think you\u2019d be good at this?</p><p style="font-size:'+u(36)+';font-weight:700;line-height:1.35;margin:'+u(6)+' 0 0;color:'+ngE.accent+'">DM us \u2018LifeOps\u2019</p></div></div>');
    }
    case "story-lost": return lostFoundHTML(true,f,tx("photo"));
    case "story-found": return lostFoundHTML(false,f,tx("photo"));
@@ -1404,38 +1404,38 @@ async function renderPNGForDraft(draft,btn){
       drawStickerC(ctx,"Question sticker",(W-640)/2,250+76+105+qh+34+110,640,300,true,false);
       var o4=await loadImg(objSrc(g("object","books"))).catch(function(){return null;});if(o4)drawContainTx(ctx,o4,W-80-205,H-300-160,410,rtx("object"));
     } else if(tpl.id==="story-recruit"){
-      ctx.fillStyle=PLUM;ctx.fillRect(0,0,W,H);
+      var ngR=newsGround(color), darkR=ngR.bg===PLUM||ngR.bg===HOT; ctx.fillStyle=ngR.bg;ctx.fillRect(0,0,W,H);
       var at3=await loadImg(OBJECTS[0].src).catch(function(){return null;});if(at3)drawContainTx(ctx,at3,W+80-230,330+230,460,rtx("object"));
-      if(logo)drawHandleC(ctx,logo,80,250,true);
-      ctx.font='800 245px "Bricolage Grotesque",sans-serif';ctx.textBaseline="top";
-      ctx.fillStyle="#fff";ctx.fillText("JOIN",80,250+76+290);
-      ctx.fillStyle=HOT;ctx.fillText("LIFEOPS",80,250+76+290+245*0.88);
-      var ry2=250+76+290+245*0.88*2+42;
-      var rw=drawChipC(ctx,g("role","Role"),80,ry2,"pink"); drawChipC(ctx,g("pillar","Pillar"),80+rw+14,ry2,"glass");
+      if(logo)drawHandleC(ctx,logo,80,250,darkR);
+      ctx.font='800 222px "Bricolage Grotesque",sans-serif';ctx.textBaseline="top";
+      ctx.fillStyle=ngR.fg;ctx.fillText("JOIN",80,250+76+290);
+      ctx.fillStyle=ngR.accent;ctx.fillText("LIFEOPS",80,250+76+290+222*0.88);
+      var ry2=250+76+290+222*0.88*2+42;
+      var rw=drawChipC(ctx,g("role","Role"),80,ry2,ngR.bg===HOT?"dark":"pink"); drawChipC(ctx,g("pillar","Pillar"),80+rw+14,ry2,darkR?"glass":"dark");
       var perks=[["🙈","Your name stays private. Credit goes to a codename like LifeOps #07."],["🏅","Get a certifier.io certificate for the work you did."],["🕐","Flexible. Do what you can, when you can."]];
       var py=ry2+64+60;
-      perks.forEach(function(p){ctx.beginPath();ctx.arc(80+36,py+36,36,0,7);ctx.fillStyle="rgba(255,255,255,0.1)";ctx.fill();
-        setFont(ctx,34,400,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(p[0],80+36,py+38);ctx.textAlign="left";
-        drawText(ctx,p[1],80+96,py+8,34,'"Plus Jakarta Sans",sans-serif',400,"rgba(255,255,255,0.86)",800,"left",1.35);py+=110;});
-      drawStickerC(ctx,"Link: Admin Arc",(W-420)/2,H-300-100,420,100,false,true);
+      perks.forEach(function(p){ctx.beginPath();ctx.arc(80+36,py+36,36,0,7);ctx.fillStyle=darkR?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)";ctx.fill();
+        setFont(ctx,34,400,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle=ngR.fg;ctx.fillText(p[0],80+36,py+38);ctx.textAlign="left";
+        drawText(ctx,p[1],80+96,py+8,34,'"Plus Jakarta Sans",sans-serif',500,ngR.fg,800,"left",1.5);py+=110;});
+      drawStickerC(ctx,"Link: Admin Arc",(W-420)/2,H-300-100,420,100,false,darkR);
     } else if(tpl.id==="story-explainer"){
-      ctx.fillStyle=PLUM;ctx.fillRect(0,0,W,H);
+      var ngE=newsGround(color), darkE=ngE.bg===PLUM||ngE.bg===HOT; ctx.fillStyle=ngE.bg;ctx.fillRect(0,0,W,H);
       var at4=await loadImg(OBJECTS[0].src).catch(function(){return null;});if(at4)drawContainTx(ctx,at4,930,1380,300,rtx("object"));
-      if(logo)drawHandleC(ctx,logo,80,250,true);
+      if(logo)drawHandleC(ctx,logo,80,250,darkE);
       var hy=250+76+160;
-      hy+=drawGrotesk(ctx,"What does a",80,hy,110,"#fff",920);
-      hy+=drawGrotesk(ctx,g("role","News Correspondent"),80,hy,110,HOT,920);
-      hy+=drawGrotesk(ctx,"do?",80,hy,110,"#fff",920);
+      hy+=drawGrotesk(ctx,"What does a",80,hy,100,ngE.fg,920);
+      hy+=drawGrotesk(ctx,g("role","News Correspondent"),80,hy,100,ngE.accent,920);
+      hy+=drawGrotesk(ctx,"do?",80,hy,100,ngE.fg,920);
       var ly=hy+56;
       [g("line1","Collects campus news"),g("line2","Verifies it — no rumours"),g("line3","Produces the weekly news wrap")].forEach(function(t,i){
-        ctx.beginPath();ctx.arc(80+36,ly+36,36,0,7);ctx.fillStyle="rgba(255,255,255,0.1)";ctx.fill();
-        setFont(ctx,34,700,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle="#fff";ctx.fillText(String(i+1),80+36,ly+38);ctx.textAlign="left";
-        var th=drawText(ctx,t,80+96,ly+12,34,'"Plus Jakarta Sans",sans-serif',400,"rgba(255,255,255,0.86)",824,"left",1.35);
+        ctx.beginPath();ctx.arc(80+36,ly+36,36,0,7);ctx.fillStyle=darkE?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)";ctx.fill();
+        setFont(ctx,34,700,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle=ngE.fg;ctx.fillText(String(i+1),80+36,ly+38);ctx.textAlign="left";
+        var th=drawText(ctx,t,80+96,ly+12,34,'"Plus Jakarta Sans",sans-serif',500,ngE.fg,824,"left",1.5);
         ly+=Math.max(110,th+26);
       });
       var fy=H-300-110;
-      drawText(ctx,"Think you'd be good at this?",80,fy,36,'"Plus Jakarta Sans",sans-serif',700,"#ffffff",920,"left",1.35);
-      drawText(ctx,"DM us 'LifeOps'",80,fy+52,36,'"Plus Jakarta Sans",sans-serif',700,HOT,920,"left",1.35);
+      drawText(ctx,"Think you'd be good at this?",80,fy,36,'"Plus Jakarta Sans",sans-serif',700,ngE.fg,920,"left",1.35);
+      drawText(ctx,"DM us 'LifeOps'",80,fy+52,36,'"Plus Jakarta Sans",sans-serif',700,ngE.accent,920,"left",1.35);
     } else if(tpl.id==="story-lost"||tpl.id==="story-found"){
       /* Lost & Found: stacked layout — the item photo sits in its own area
          at the top (contain, never cropped, any ratio) and the white detail
