@@ -1407,10 +1407,10 @@ async function renderPNGForDraft(draft,btn){
       var ngR=newsGround(color), darkR=ngR.bg===PLUM||ngR.bg===HOT; ctx.fillStyle=ngR.bg;ctx.fillRect(0,0,W,H);
       var at3=await loadImg(OBJECTS[0].src).catch(function(){return null;});if(at3)drawContainTx(ctx,at3,W+80-230,330+230,460,rtx("object"));
       if(logo)drawHandleC(ctx,logo,80,250,darkR);
-      ctx.font='800 245px "Bricolage Grotesque",sans-serif';ctx.textBaseline="top";
+      ctx.font='800 222px "Bricolage Grotesque",sans-serif';ctx.textBaseline="top";
       ctx.fillStyle=ngR.fg;ctx.fillText("JOIN",80,250+76+290);
-      ctx.fillStyle=ngR.accent;ctx.fillText("LIFEOPS",80,250+76+290+245*0.88);
-      var ry2=250+76+290+245*0.88*2+42;
+      ctx.fillStyle=ngR.accent;ctx.fillText("LIFEOPS",80,250+76+290+222*0.88);
+      var ry2=250+76+290+222*0.88*2+42;
       var rw=drawChipC(ctx,g("role","Role"),80,ry2,ngR.bg===HOT?"dark":"pink"); drawChipC(ctx,g("pillar","Pillar"),80+rw+14,ry2,darkR?"glass":"dark");
       var perks=[["🙈","Your name stays private. Credit goes to a codename like LifeOps #07."],["🏅","Get a certifier.io certificate for the work you did."],["🕐","Flexible. Do what you can, when you can."]];
       var py=ry2+64+60;
