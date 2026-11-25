@@ -591,7 +591,7 @@ function canvasHTML(tid,f,color,transforms,sizeVariant){
      +'<img data-pan="object" src="'+objSrc(g("object","books"))+'" alt="" style="margin-top:auto;align-self:flex-end;width:'+u(410)+';'+objStyle(tx("object"),"")+'" /></div>');
    case "story-recruit": {
      var ngR=newsGround(color), darkR=ngR.bg===PLUM||ngR.bg===HOT, perks=[{icon:"🙈",text:"Your name stays private. Credit goes to a codename like LifeOps #07."},{icon:"🏅",text:"Get a certifier.io certificate for the work you did."},{icon:"🕐",text:"Flexible. Do what you can, when you can."}], ph="";
-     perks.forEach(function(p){ph+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:'+(darkR?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)")+';font-size:'+u(34)+'">'+p.icon+'</span><p style="font-size:'+u(34)+';line-height:1.35;margin:0;padding-top:'+u(12)+';color:'+(darkR?"rgba(255,255,255,0.86)":"rgba(31,18,53,0.8)")+'">'+p.text+'</p></div>';});
+     perks.forEach(function(p){ph+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:'+(darkR?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)")+';font-size:'+u(34)+'">'+p.icon+'</span><p style="font-size:'+u(34)+';font-weight:500;line-height:1.5;margin:0;padding-top:'+u(12)+';color:'+ngR.fg+'">'+p.text+'</p></div>';});
      return frameHTML("story",ngR.bg,darkR,
        '<img data-pan="object" src="'+OBJECTS[0].src+'" alt="" style="position:absolute;right:'+u(-80)+';top:'+u(330)+';width:'+u(460)+';'+objStyle(tx("object"),"")+'" />'
        +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'+handleHTML(darkR)
@@ -602,11 +602,11 @@ function canvasHTML(tid,f,color,transforms,sizeVariant){
    }
    case "story-explainer": {
      var ngE=newsGround(color), darkE=ngE.bg===PLUM||ngE.bg===HOT, lines=[g("line1","Collects campus news"),g("line2","Verifies it — no rumours"),g("line3","Produces the weekly news wrap")], lh="";
-     lines.forEach(function(t,i){lh+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:'+(darkE?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)")+';font-weight:700;font-size:'+u(34)+'">'+(i+1)+'</span><p style="font-size:'+u(34)+';line-height:1.35;margin:0;padding-top:'+u(12)+';color:'+(darkE?"rgba(255,255,255,0.86)":"rgba(31,18,53,0.8)")+'">'+esc(t)+'</p></div>';});
+     lines.forEach(function(t,i){lh+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:'+(darkE?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)")+';font-weight:700;font-size:'+u(34)+'">'+(i+1)+'</span><p style="font-size:'+u(34)+';font-weight:500;line-height:1.5;margin:0;padding-top:'+u(12)+';color:'+ngE.fg+'">'+esc(t)+'</p></div>';});
      return frameHTML("story",ngE.bg,darkE,
        '<img data-pan="object" src="'+OBJECTS[0].src+'" alt="" style="position:absolute;right:'+u(0)+';top:'+u(1230)+';width:'+u(300)+';'+objStyle(tx("object"),"")+'" />'
        +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'+handleHTML(darkE)
-       +'<h3 class="grotesk" style="font-size:'+u(110)+';line-height:1.02;margin:'+u(160)+' 0 0">What does a<br /><span style="color:'+ngE.accent+'">'+esc(g("role","News Correspondent"))+'</span><br />do?</h3>'
+       +'<h3 class="grotesk" style="font-size:'+u(100)+';line-height:1.02;margin:'+u(160)+' 0 0">What does a<br /><span style="color:'+ngE.accent+'">'+esc(g("role","News Correspondent"))+'</span><br />do?</h3>'
        +'<div style="display:flex;flex-direction:column;gap:'+u(26)+';margin-top:'+u(56)+'">'+lh+'</div>'
        +'<div style="margin-top:auto;padding-top:'+u(56)+'"><p style="font-size:'+u(36)+';font-weight:700;line-height:1.35;margin:0;color:'+ngE.fg+'">Think you\u2019d be good at this?</p><p style="font-size:'+u(36)+';font-weight:700;line-height:1.35;margin:'+u(6)+' 0 0;color:'+ngE.accent+'">DM us \u2018LifeOps\u2019</p></div></div>');
    }
@@ -1416,21 +1416,21 @@ async function renderPNGForDraft(draft,btn){
       var py=ry2+64+60;
       perks.forEach(function(p){ctx.beginPath();ctx.arc(80+36,py+36,36,0,7);ctx.fillStyle=darkR?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)";ctx.fill();
         setFont(ctx,34,400,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle=ngR.fg;ctx.fillText(p[0],80+36,py+38);ctx.textAlign="left";
-        drawText(ctx,p[1],80+96,py+8,34,'"Plus Jakarta Sans",sans-serif',400,darkR?"rgba(255,255,255,0.86)":"rgba(31,18,53,0.8)",800,"left",1.35);py+=110;});
+        drawText(ctx,p[1],80+96,py+8,34,'"Plus Jakarta Sans",sans-serif',500,ngR.fg,800,"left",1.5);py+=110;});
       drawStickerC(ctx,"Link: Admin Arc",(W-420)/2,H-300-100,420,100,false,darkR);
     } else if(tpl.id==="story-explainer"){
       var ngE=newsGround(color), darkE=ngE.bg===PLUM||ngE.bg===HOT; ctx.fillStyle=ngE.bg;ctx.fillRect(0,0,W,H);
       var at4=await loadImg(OBJECTS[0].src).catch(function(){return null;});if(at4)drawContainTx(ctx,at4,930,1380,300,rtx("object"));
       if(logo)drawHandleC(ctx,logo,80,250,darkE);
       var hy=250+76+160;
-      hy+=drawGrotesk(ctx,"What does a",80,hy,110,ngE.fg,920);
-      hy+=drawGrotesk(ctx,g("role","News Correspondent"),80,hy,110,ngE.accent,920);
-      hy+=drawGrotesk(ctx,"do?",80,hy,110,ngE.fg,920);
+      hy+=drawGrotesk(ctx,"What does a",80,hy,100,ngE.fg,920);
+      hy+=drawGrotesk(ctx,g("role","News Correspondent"),80,hy,100,ngE.accent,920);
+      hy+=drawGrotesk(ctx,"do?",80,hy,100,ngE.fg,920);
       var ly=hy+56;
       [g("line1","Collects campus news"),g("line2","Verifies it — no rumours"),g("line3","Produces the weekly news wrap")].forEach(function(t,i){
         ctx.beginPath();ctx.arc(80+36,ly+36,36,0,7);ctx.fillStyle=darkE?"rgba(255,255,255,0.1)":"rgba(31,18,53,0.08)";ctx.fill();
         setFont(ctx,34,700,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle=ngE.fg;ctx.fillText(String(i+1),80+36,ly+38);ctx.textAlign="left";
-        var th=drawText(ctx,t,80+96,ly+12,34,'"Plus Jakarta Sans",sans-serif',400,darkE?"rgba(255,255,255,0.86)":"rgba(31,18,53,0.8)",824,"left",1.35);
+        var th=drawText(ctx,t,80+96,ly+12,34,'"Plus Jakarta Sans",sans-serif',500,ngE.fg,824,"left",1.5);
         ly+=Math.max(110,th+26);
       });
       var fy=H-300-110;
