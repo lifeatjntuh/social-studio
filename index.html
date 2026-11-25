@@ -272,6 +272,9 @@ var TEMPLATES=[
  {id:"story-recruit",name:"Story · Join LifeOps",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"LifeOps role call: plum ground, Join LifeOps grotesk, role + pillar chips, the three real perks and a link-sticker slot.",defaultColor:"lavender",
   fields:[{key:"role",label:"Role",type:"text"},{key:"pillar",label:"Pillar (Curate / Connect / Collab)",type:"text"}],
   defaults:{role:"Photo Curator",pillar:"Curate"}},
+ {id:"story-explainer",name:"Story · What This Role Does",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"Role explainer: plum ground, grotesk question with the role in pink, three numbered lines from the role sheet, and a DM 'LifeOps' line.",defaultColor:"lavender",
+   defaults:{role:"News Correspondent",line1:"Collects campus news",line2:"Verifies it — no rumours",line3:"Produces the weekly news wrap"},
+   fields:[{key:"role",label:"Role (grotesk)",type:"text"},{key:"line1",label:"Line 1",type:"text"},{key:"line2",label:"Line 2",type:"text"},{key:"line3",label:"Line 3",type:"text"}]},
  {id:"story-lost",name:"Story · Lost Item",format:"story",group:"Stories · Vertical",sizeLabel:"1080 × 1920",desc:"Lost-and-found story for something a student lost: full-bleed photo of the item (or a no-photo placeholder), big orange LOST label, item name, where and when it was lost, and a DM @lifeatjntuh line. No names, no tags — the finder is notified by DM after posting.",defaultColor:"peach",
   fields:[{key:"photo",label:"Photo of the item (upload if you have one)",type:"photo"},{key:"item",label:"Item name",type:"text"},{key:"where",label:"Where it was lost",type:"text"},{key:"when",label:"When it was lost",type:"text"},{key:"contact",label:"How to help — DM line",type:"text"}],
   defaults:{photo:"",item:"Clear-framed spectacles",where:"Near the University Library",when:"Fri, Nov 21 · evening",contact:"DM @lifeatjntuh if you found it"}},
@@ -293,6 +296,7 @@ var PRESETS=[
  {name:"This Week on Campus",template:"digest",note:"Monday WhatsApp Channel digest",overrides:{},color:"yellow",caption:"Your week, sorted. Forward this to your class group so nobody misses out.",hashtags:"#LifeAtJNTUH #ThisWeekOnCampus"},
  {name:"How to Get Featured",template:"carousel-steps",note:"Explainer carousel closing slides",overrides:{},color:"yellow",caption:"Save this for later 📌 Full guide on the WhatsApp Channel too — link in bio.",hashtags:"#LifeAtJNTUH #GetFeatured #CampusCreators"},
  {name:"Join the Team",template:"story-recruit",note:"LifeOps recruitment story",overrides:{},color:"lavender",caption:"We're growing the team. Tap the link sticker — Admin Arc form takes 2 minutes.",hashtags:"#LifeOps #LifeAtJNTUH"},
+ {name:"What This Role Does",template:"story-explainer",note:"LifeOps role explainer — what the role actually does",overrides:{},color:"lavender",caption:"What does this role actually do? Here's the real job. DM us 'LifeOps' to try it.",hashtags:"#LifeOps #LifeAtJNTUH"},
  {name:"Photo of the Day",template:"story-photo",note:"Daily story photo with credit",overrides:{},color:"pink",caption:"Photo of the day 📸 Send yours via the form in bio.",hashtags:"#LifeAtJNTUH #PhotoOfTheDay"},
  {name:"Photo of the Day · Full Bleed",template:"photo-day",note:"Seamless single post — photo edge to edge, only handle + credit",overrides:{},color:"pink",caption:"Photo of the day 📸 Nothing but the frame, the light, and campus.\n\nSend yours via the form in bio.",hashtags:"#LifeAtJNTUH #PhotoOfTheDay #CampusDiaries"},
  {name:"Lost Item",template:"story-lost",note:"Lost-and-found story — upload the item photo, or post without one",overrides:{},color:"peach",caption:"Lost something on campus? 👀\n\nDM us a photo and where you lost it — we'll post it here.",hashtags:"#LifeAtJNTUH #LostAndFound #JNTUH"},
@@ -504,6 +508,16 @@ function canvasHTML(tid,f,color,transforms,sizeVariant){
        +'<div style="display:flex;flex-wrap:wrap;gap:'+u(14)+';margin-top:'+u(42)+'">'+chipHTML(g("role","Role"),"pink")+chipHTML(g("pillar","Pillar"),"glass")+'</div>'
        +'<div style="display:flex;flex-direction:column;gap:'+u(26)+';margin-top:'+u(60)+'">'+ph+'</div>'
        +'<div style="margin-top:auto;padding-top:'+u(56)+'">'+stickerHTML("Link: Admin Arc",false,true)+'</div></div>');
+   }
+   case "story-explainer": {
+     var lines=[g("line1","Collects campus news"),g("line2","Verifies it — no rumours"),g("line3","Produces the weekly news wrap")], lh="";
+     lines.forEach(function(t,i){lh+='<div style="display:flex;align-items:flex-start;gap:'+u(24)+'"><span style="display:flex;flex-shrink:0;align-items:center;justify-content:center;border-radius:999px;width:'+u(72)+';height:'+u(72)+';background:rgba(255,255,255,0.1);font-weight:700;font-size:'+u(34)+'">'+(i+1)+'</span><p style="font-size:'+u(34)+';line-height:1.35;margin:0;padding-top:'+u(12)+';color:rgba(255,255,255,0.86)">'+esc(t)+'</p></div>';});
+     return frameHTML("story",PLUM,true,
+       '<img data-pan="object" src="'+OBJECTS[0].src+'" alt="" style="position:absolute;right:'+u(0)+';top:'+u(1230)+';width:'+u(300)+';'+objStyle(tx("object"),"")+'" />'
+       +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;'+SPAD+'">'+handleHTML(true)
+       +'<h3 class="grotesk" style="font-size:'+u(110)+';line-height:1.02;margin:'+u(160)+' 0 0">What does a<br /><span style="color:'+HOT+'">'+esc(g("role","News Correspondent"))+'</span><br />do?</h3>'
+       +'<div style="display:flex;flex-direction:column;gap:'+u(26)+';margin-top:'+u(56)+'">'+lh+'</div>'
+       +'<div style="margin-top:auto;padding-top:'+u(56)+'"><p style="font-size:'+u(36)+';font-weight:700;line-height:1.35;margin:0;color:#fff">Think you\u2019d be good at this?</p><p style="font-size:'+u(36)+';font-weight:700;line-height:1.35;margin:'+u(6)+' 0 0;color:'+HOT+'">DM us \u2018LifeOps\u2019</p></div></div>');
    }
    case "story-lost": return lostFoundHTML(true,f,tx("photo"));
    case "story-found": return lostFoundHTML(false,f,tx("photo"));
@@ -1178,6 +1192,24 @@ async function renderPNGForDraft(draft,btn){
         setFont(ctx,34,400,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(p[0],80+36,py+38);ctx.textAlign="left";
         drawText(ctx,p[1],80+96,py+8,34,'"Plus Jakarta Sans",sans-serif',400,"rgba(255,255,255,0.86)",800,"left",1.35);py+=110;});
       drawStickerC(ctx,"Link: Admin Arc",(W-420)/2,H-300-100,420,100,false,true);
+    } else if(tpl.id==="story-explainer"){
+      ctx.fillStyle=PLUM;ctx.fillRect(0,0,W,H);
+      var at4=await loadImg(OBJECTS[0].src).catch(function(){return null;});if(at4)drawContainTx(ctx,at4,930,1380,300,rtx("object"));
+      if(logo)drawHandleC(ctx,logo,80,250,true);
+      var hy=250+76+160;
+      hy+=drawGrotesk(ctx,"What does a",80,hy,110,"#fff",920);
+      hy+=drawGrotesk(ctx,g("role","News Correspondent"),80,hy,110,HOT,920);
+      hy+=drawGrotesk(ctx,"do?",80,hy,110,"#fff",920);
+      var ly=hy+56;
+      [g("line1","Collects campus news"),g("line2","Verifies it — no rumours"),g("line3","Produces the weekly news wrap")].forEach(function(t,i){
+        ctx.beginPath();ctx.arc(80+36,ly+36,36,0,7);ctx.fillStyle="rgba(255,255,255,0.1)";ctx.fill();
+        setFont(ctx,34,700,'"Plus Jakarta Sans",sans-serif');ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle="#fff";ctx.fillText(String(i+1),80+36,ly+38);ctx.textAlign="left";
+        var th=drawText(ctx,t,80+96,ly+12,34,'"Plus Jakarta Sans",sans-serif',400,"rgba(255,255,255,0.86)",824,"left",1.35);
+        ly+=Math.max(110,th+26);
+      });
+      var fy=H-300-110;
+      drawText(ctx,"Think you'd be good at this?",80,fy,36,'"Plus Jakarta Sans",sans-serif',700,"#ffffff",920,"left",1.35);
+      drawText(ctx,"DM us 'LifeOps'",80,fy+52,36,'"Plus Jakarta Sans",sans-serif',700,HOT,920,"left",1.35);
     } else if(tpl.id==="story-lost"||tpl.id==="story-found"){
       /* Lost & Found: same layout as the HTML canvas — full-bleed item photo
          (or a plum no-photo placeholder), big LOST / FOUND pill, white
